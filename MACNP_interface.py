@@ -68,7 +68,8 @@ def solve_MACNP_pipeline(G, remove_ratio, export_path, g_export_name = "G_MACNP.
 
 if "__main__" == __name__:
 
-    sol_path = os.path.join("small-world_2022-09-10-20-26")
+    #sol_path = os.path.join("small-world_2022-09-10-20-26")
+    sol_path = os.path.join("small-world_2022-09-16-11-17")
     hybrid_exp_report_df = pd.read_csv(os.path.join(sol_path, "report_fp.csv"))
 
     curr_exp_df = pd.DataFrame()
