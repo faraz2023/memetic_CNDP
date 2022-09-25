@@ -30,7 +30,7 @@ def run_MACNP(InstanceFile, filename, K,ExecuteFile=os.path.join('MACNP.exe')
     , Dataset='model', RunTime=120, NumberRepeats=1):
     #copy instance file to MACNP folder
     true_instance_file = os.path.join('instances', Dataset, filename)
-    print("File exists: ", os.path.exists(InstanceFile))
+    print("Graph File exists: ", os.path.exists(InstanceFile))
     
     shutil.copyfile(InstanceFile, true_instance_file)
     print("Trying to run MACNP")
@@ -38,10 +38,10 @@ def run_MACNP(InstanceFile, filename, K,ExecuteFile=os.path.join('MACNP.exe')
     #print(command)
     os.system(f"./{str(ExecuteFile)} {filename} {Dataset} {K} {RunTime} {NumberRepeats}")
 
-def solve_MACNP_pipeline(G, remove_ratio, export_path, g_export_name = "G_MACNP.txt", sol_export_name = "MACNP_sol.txt", time_limit=40, rewrite=False):
+def solve_MACNP_pipeline(G, K, export_path, g_export_name = "G_MACNP.txt",\
+ sol_export_name = "MACNP_sol.txt", time_limit=40, rewrite=False):
 
     N = G.number_of_nodes()
-    K = int(remove_ratio * N)
     nx_to_macnp(G, export_path, g_export_name)
 
     Dataset="model"
@@ -79,7 +79,8 @@ if "__main__" == __name__:
         G_path = os.path.join(exp_path, "G.el")
 
         G = nx.read_edgelist(G_path, nodetype=int)
-        solve_MACNP_pipeline(G, remove_ratio=0.3, export_path=exp_path, g_export_name = "G_MACNP.txt", sol_export_name = "MACNP_sol.txt", time_limit=240, rewrite=True)
+        solve_MACNP_pipeline(G, remove_ratio=0.3, export_path=exp_path, g_export_name = "G_MACNP.txt", 
+        sol_export_name = "MACNP_sol.txt", time_limit=240, rewrite=True)
 
         curr_df_dict = {"exp_label": exp_label}
 
