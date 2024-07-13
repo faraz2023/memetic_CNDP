@@ -6,8 +6,10 @@ import pandas as pd
 import time
 from graph_utils import calc_graph_connectivity
 
-BUDGET = [0.1]  #  0.2, 0.3, 0.4# Example budget values
+BUDGET = [ 0.1, 0.2, 0.3, 0.4]  # Example budget values 0.1, 0.2, 0.3, 
 TIME_LIMIT = 5  # in seconds
+
+
 
 def make_dir(path):
     """Create a directory if it does not exist."""
@@ -60,7 +62,8 @@ def solve_MACNP_pipeline(G, budget, export_path, g_export_name="G_MACNP.txt", so
     if os.path.exists(temp_export_path):
         with open(temp_export_path, 'r') as f:
             lines = f.readlines()
-            sol = [int(s) for s in lines if s.strip().isdigit()]
+            sol = lines[-1]
+            sol = [int(s) for s in sol.split(" ") if s != '\n']
             sol_to_txt(sol, final_export_path)
     else:
         sol = []
@@ -93,15 +96,15 @@ if __name__ == "__main__":
             
             # Solve MACNP for the given budget
             macnp_time, macnp_sol = solve_MACNP_pipeline(G, budget, export_path=exp_path, g_export_name="G_MACNP.txt", sol_export_name="MACNP_sol.txt", time_limit=TIME_LIMIT, rewrite=True)
-
             # Collect result data for the current experiment
             result_data = {
                 "exp_label": exp_label,
                 "budget": budget,
                 "number_of_nodes": number_of_nodes,
-                "nodes_removed": macnp_sol,
+                "nodes_removed": len(macnp_sol),
+                "removed_nodes": macnp_sol,
                 "macnp_time": macnp_time,
-                "macnp_connectivity": np.nan,
+                "pairwise_connectivity": np.nan,
                 "gurobi_connectivity": np.nan,
                 "hybrid_08_connectivity": np.nan
             }
