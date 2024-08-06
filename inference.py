@@ -6,9 +6,8 @@ import pandas as pd
 import time
 from graph_utils import calc_graph_connectivity
 
-BUDGET = [ 0.1, 0.2, 0.3, 0.4]  # Example budget values 0.1, 0.2, 0.3, 
-TIME_LIMIT = 5  # in seconds
-
+BUDGET = [0.1, 0.2, 0.3, 0.4]  # Example budget values
+TIME_LIMIT = 2  # in seconds
 
 
 def make_dir(path):
@@ -16,10 +15,12 @@ def make_dir(path):
     if not os.path.exists(path):
         os.makedirs(path)
 
+
 def sol_to_txt(sol_arr, export_path):
     """Save solution array to a text file."""
     sol_np = np.array(sol_arr, dtype=int).reshape(-1)
     np.savetxt(export_path, sol_np, fmt="%i", delimiter=',')
+
 
 def nx_to_macnp(G, export_path, export_name):
     """Convert a NetworkX graph to MACNP format and save it to a file."""
@@ -33,6 +34,7 @@ def nx_to_macnp(G, export_path, export_name):
                 f.write(f"{int(nbr)} ")
             f.write("\n")
 
+
 def run_MACNP(InstanceFile, filename, K, ExecuteFile=os.path.join('MACNP.exe'), Dataset='model', RunTime=120, NumberRepeats=1):
     """Run the MACNP executable with the specified parameters and return the execution time."""
     true_instance_file = os.path.join('instances', Dataset, filename)
@@ -41,6 +43,7 @@ def run_MACNP(InstanceFile, filename, K, ExecuteFile=os.path.join('MACNP.exe'), 
     os.system(f"./{str(ExecuteFile)} {filename} {Dataset} {K} {RunTime} {NumberRepeats}")
     end_time = time.time()
     return end_time - start_time
+
 
 def solve_MACNP_pipeline(G, budget, export_path, g_export_name="G_MACNP.txt", sol_export_name="MACNP_sol.txt", time_limit=40, rewrite=False):
     """Solve the MACNP problem for a given graph and budget, and return the solution and execution time."""
@@ -51,7 +54,7 @@ def solve_MACNP_pipeline(G, budget, export_path, g_export_name="G_MACNP.txt", so
     Dataset = "model"
     temp_export_file_name = g_export_name + str(K) + ".res1"
     temp_export_path = os.path.join('results', Dataset, temp_export_file_name)
-    
+
     # Run MACNP if the solution doesn't already exist or rewrite is True
     if rewrite or not os.path.exists(temp_export_path):
         macnp_time = run_MACNP(os.path.join(export_path, g_export_name), g_export_name, K=K, RunTime=time_limit)
@@ -70,18 +73,18 @@ def solve_MACNP_pipeline(G, budget, export_path, g_export_name="G_MACNP.txt", so
 
     return macnp_time, sol
 
+
 if __name__ == "__main__":
-    
     sol_path = os.path.join("EXP_LIST")
     hybrid_exp_report_df = pd.read_csv(os.path.join(sol_path, "report_fp.csv"))
-    
+
     report_file_path = os.path.join("results", "experiment_report.csv")
-    
+
     # Create report file if it does not exist
     if not os.path.exists(report_file_path) or os.path.getsize(report_file_path) == 0:
         report_df = pd.DataFrame(columns=["exp_label", "budget", "number_of_nodes", "nodes_removed", "macnp_time", "macnp_connectivity", "gurobi_connectivity", "hybrid_08_connectivity"])
         report_df.to_csv(report_file_path, index=False)
-    
+
     all_results = []
 
     for budget in BUDGET:
@@ -93,7 +96,7 @@ if __name__ == "__main__":
             # Read the graph from the edge list file
             G = nx.read_edgelist(G_path, nodetype=int)
             number_of_nodes = G.number_of_nodes()
-            
+
             # Solve MACNP for the given budget
             macnp_time, macnp_sol = solve_MACNP_pipeline(G, budget, export_path=exp_path, g_export_name="G_MACNP.txt", sol_export_name="MACNP_sol.txt", time_limit=TIME_LIMIT, rewrite=True)
             # Collect result data for the current experiment
@@ -104,7 +107,7 @@ if __name__ == "__main__":
                 "nodes_removed": len(macnp_sol),
                 "removed_nodes": macnp_sol,
                 "macnp_time": macnp_time,
-                "pairwise_connectivity": np.nan,
+                "macnp_connectivity": np.nan,
                 "gurobi_connectivity": np.nan,
                 "hybrid_08_connectivity": np.nan
             }
@@ -148,15 +151,18 @@ if __name__ == "__main__":
         report_df = pd.read_csv(report_file_path)
     else:
         report_df = pd.DataFrame(columns=["exp_label", "budget", "number_of_nodes", "nodes_removed", "macnp_time", "macnp_connectivity", "gurobi_connectivity", "hybrid_08_connectivity"])
-        
+
     new_results_df = pd.DataFrame(all_results)
     report_df = pd.concat([report_df, new_results_df])
     report_df = report_df.sort_values(by=["exp_label", "budget"])
+    
+    # Drop the specified columns
+    report_df = report_df.drop(columns=["gurobi_connectivity", "hybrid_08_connectivity"])
+    
     report_df.to_csv(report_file_path, index=False)
     print(f"Appended and grouped results in {report_file_path}")
 
 """
-
 PPI_2
 PPI_3
 PPI_4
@@ -175,5 +181,4 @@ PPI_16
 PPI_17
 PPI_18
 PPI_19
-
 """
