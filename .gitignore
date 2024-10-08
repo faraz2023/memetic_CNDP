@@ -1,3 +1,8 @@
+# often changing files
+EXP_LIST/
+past_results/
+Graphs/
+
 # Prerequisites
 *.d
 
@@ -30,3 +35,4 @@
 *.exe
 *.out
 *.app
+

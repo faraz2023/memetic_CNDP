@@ -28,3 +28,23 @@
    number of removed nodes = 59
    Best removed nodes:
 9 13 20 23 24 29 66 69 77 91 108 134 149 163 169 182 186 207 223 231 232 248 256 283 287 300 320 348 351 364 369 375 380 385 398 402 417 430 432 433 434 439 455 459 460 467 473 486 488 490 520 524 536 540 558 566 586 589 590 
+   Computational results:                                 
+   K = 59
+   Limit time = 2.000000
+   best objective value = 97502.000000
+   time to find the best objective value = 0.890000
+   number of steps to find the objective value = 25127
+   number of generations to find the objective value = 4
+   number of removed nodes = 59
+   Best removed nodes:
+13 20 23 24 66 69 77 90 91 108 134 149 163 169 175 182 185 186 207 231 232 238 248 253 256 261 283 300 320 334 348 369 375 380 385 386 398 402 412 417 432 433 434 455 459 460 467 473 483 488 507 516 517 520 524 556 558 562 566 
+   Computational results:                                 
+   K = 59
+   Limit time = 60.000000
+   best objective value = 97502.000000
+   time to find the best objective value = 0.900000
+   number of steps to find the objective value = 29332
+   number of generations to find the objective value = 6
+   number of removed nodes = 59
+   Best removed nodes:
+1 6 13 20 23 24 69 77 85 90 91 108 134 145 149 163 169 182 185 186 231 232 238 256 261 282 283 288 300 320 334 364 366 369 375 380 385 386 398 402 412 417 432 433 434 439 459 460 467 473 483 486 488 517 520 524 558 566 578 
